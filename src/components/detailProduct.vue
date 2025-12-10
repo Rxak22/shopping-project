@@ -6,8 +6,10 @@ import { useRoute, useRouter } from 'vue-router'
 import SuggestCard from './suggestCard.vue'
 import LoadingLog from './loadingLog.vue'
 import { useHead } from '@vueuse/head'
+import { useCart } from '@/stores/cart'
 
 const route = useRoute()
+const { addItem } = useCart()
 
 interface Product {
   id: number
@@ -84,6 +86,18 @@ const handleOpenProductDetail = (id: number, pid: number) => {
 useHead({
   title: computed(() => data.value?.category.name ?? 'Loading...'),
 })
+
+const handleAddToCart = () => {
+  if (data.value) {
+    addItem({
+      id: data.value.id,
+      name: data.value.title,
+      price: data.value.price,
+      image: data.value.images,
+    })
+    alert('Added to cart!')
+  }
+}
 </script>
 
 <template>
@@ -92,10 +106,12 @@ useHead({
       <LoadingLog :loading="loadingDetail" />
       <h1 class="text-4xl font-bold">{{ data?.title }}</h1>
       <img class="w-full h-[500px] mt-5" :src="data?.images" alt="" />
+      <h2 class="text-2xl font-semibold mt-3 text-amber-500">$ {{ data?.price }}</h2>
       <p>{{ data?.description }}</p>
 
-      <button class="px-3 py-1 bg-amber-500 rounded-sm mt-3 text-slate-50 cursor-pointer">
-        Add to Card
+      <button @click="handleAddToCart"
+        class="px-3 py-1 bg-amber-500 rounded-sm mt-3 text-slate-50 cursor-pointer hover:bg-amber-600 transition">
+        Add to Cart
       </button>
       <button class="px-3 py-1 bg-amber-600 rounded-sm ml-2 mt-3 text-slate-50 cursor-pointer">
         But Now

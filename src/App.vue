@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import NavHeader from './components/navHeader.vue'
 import SiteFooter from './components/siteFooter.vue'
+import CartModal from './components/CartModal.vue'
 
 interface Product {
   id: number
@@ -13,6 +14,8 @@ interface Product {
 
 const loading = ref(false)
 const data = ref<Product[]>([])
+const isCartOpen = ref(false)
+
 onBeforeMount(async () => {
   try {
     loading.value = true;
@@ -28,7 +31,7 @@ onBeforeMount(async () => {
 
 <template>
   <header class="sticky left-0 top-0 z-50">
-    <NavHeader :loading="loading" :categories="data" />
+    <NavHeader :loading="loading" :categories="data" @openCart="isCartOpen = true" />
   </header>
 
   <main>
@@ -36,4 +39,6 @@ onBeforeMount(async () => {
   </main>
 
   <SiteFooter />
+
+  <CartModal :isOpen="isCartOpen" @close="isCartOpen = false" />
 </template>

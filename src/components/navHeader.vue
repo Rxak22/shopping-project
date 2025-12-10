@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useCart } from '@/stores/cart'
 
 interface Categories {
     id: number
@@ -12,10 +13,15 @@ const props = defineProps<{
     loading: boolean
 }>()
 
+const emit = defineEmits<{
+    openCart: []
+}>()
+
 const searchQuery = ref("")
 
 const route = useRoute()
 const router = useRouter()
+const { totalItems } = useCart()
 
 const isActiveCategory = (id: number) => {
     return route.params.id === String(id)
@@ -53,13 +59,20 @@ const handleSearchProduct = () => {
                     </RouterLink>
                 </li>
             </ul>
-            <div class="flex items-center">
+            <div class="flex items-center justify-between">
                 <div v-if="!props.loading">
                     <input type="text" v-model="searchQuery" placeholder="Search..."
                         class="text-slate-300 outline-0 rounded-md text-sm border-b border-b-amber-600 border-t border-t-amber-600 mr-2 px-2 py-1"
                         @keyup.enter="handleSearchProduct" />
                     <i @click="handleSearchProduct"
                         class="fa-solid drop-shadow hover:drop-shadow-blue-500 fa-magnifying-glass text-slate-300 cursor-pointer"></i>
+                </div>
+                <div @click="emit('openCart')"
+                    class="ml-6 relative text-slate-300 cursor-pointer hover:text-white transition">
+                    <span
+                        class="absolute -top-1 -right-3 text-[10px] text-white bg-red-500 w-4 h-4 rounded-full text-center">{{
+                        totalItems }}</span>
+                    <i class="fa-solid fa-shopping-cart text-xl"></i>
                 </div>
             </div>
         </div>
